@@ -32,7 +32,6 @@ struct DesktopView: View {
                 .scrollContentBackground(.hidden)
             }
             .navigationSplitViewColumnWidth(min: 210, ideal: 230, max: 260)
-            .toolbar(removing: .sidebarToggle)
         } detail: {
             Group {
                 if section == "Analytics", let question = selectedQuestion {

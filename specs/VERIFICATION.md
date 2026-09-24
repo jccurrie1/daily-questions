@@ -23,7 +23,7 @@ Used a verification app with a separate bundle identifier and local store. Produ
 - Visually inspected the neutral palette, native sidebar, logo, question editor, answer bubbles, and chart. Corrected chart-label alignment and saved-answer contrast during the checks.
 - Accessibility inspection found explicit answer values, saved/disabled states, week navigation labels, and a date/answer summary for the chart. Keyboard text entry and editing were exercised.
 
-Sidebar shortcut follow-up: the normal Debug app rebuilt and relaunched successfully. Computer use verified that Command+B hides and restores the sidebar, including with the question text field focused, without changing its text or selection. The window has no sidebar toggle control or shortcut label, and the View menu has no sidebar command. No stored records were changed.
+Sidebar shortcut follow-up: the normal Debug app rebuilt and relaunched successfully. Computer use verified that Command+B hides and restores the sidebar, including with the question text field focused, without changing its text or selection. After restoring the original sidebar design and native toggle button, computer use verified that both the button and Command+B hide and restore the sidebar. No Command+B shortcut label is displayed. No stored records were changed.
 
 ## Limits
 
