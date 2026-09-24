@@ -23,6 +23,8 @@ Used a verification app with a separate bundle identifier and local store. Produ
 - Visually inspected the neutral palette, native sidebar, logo, question editor, answer bubbles, and chart. Corrected chart-label alignment and saved-answer contrast during the checks.
 - Accessibility inspection found explicit answer values, saved/disabled states, week navigation labels, and a date/answer summary for the chart. Keyboard text entry and editing were exercised.
 
+Sidebar shortcut follow-up: the normal Debug app rebuilt and relaunched successfully. Computer use verified that Command+B hides and restores the sidebar, including with the question text field focused, without changing its text or selection. The window has no sidebar toggle control or shortcut label, and the View menu has no sidebar command. No stored records were changed.
+
 ## Limits
 
 Computer use timed out when targeting the system menu bar. The answer checks used the exact `MenuPanel` view in a verification-only window, so they verify the panel and shared persistence but do not prove clicking the actual menu bar icon opens it. Closing the main window and reopening from the Dock was not conclusively verified through the computer-use tool. Full VoiceOver operation and changed Reduce Transparency settings were not tested. Weekend, midnight, time-zone, and storage-failure rules were checked with controlled automated tests, not by changing this Mac's settings.

@@ -6,13 +6,14 @@ struct DesktopView: View {
     @State private var selectedID: UUID?
     @State private var showArchived = false
     @State private var creating = false
+    @State private var sidebarVisibility: NavigationSplitViewVisibility = .all
 
     private var selectedQuestion: DailyQuestion? {
         store.questions.first { $0.id == selectedID }
     }
 
     var body: some View {
-        NavigationSplitView {
+        NavigationSplitView(columnVisibility: $sidebarVisibility) {
             VStack(alignment: .leading, spacing: 22) {
                 VStack(alignment: .leading, spacing: 14) {
                     Image("AppLogo")
@@ -31,6 +32,7 @@ struct DesktopView: View {
                 .scrollContentBackground(.hidden)
             }
             .navigationSplitViewColumnWidth(min: 210, ideal: 230, max: 260)
+            .toolbar(removing: .sidebarToggle)
         } detail: {
             Group {
                 if section == "Analytics", let question = selectedQuestion {
@@ -47,6 +49,17 @@ struct DesktopView: View {
         .navigationTitle("")
         .frame(minWidth: 950, minHeight: 610)
         .foregroundStyle(Palette.ink)
+        .background {
+            Button("") {
+                withAnimation {
+                    sidebarVisibility = sidebarVisibility == .detailOnly ? .all : .detailOnly
+                }
+            }
+            .keyboardShortcut("b", modifiers: .command)
+            .frame(width: 0, height: 0)
+            .opacity(0)
+            .accessibilityHidden(true)
+        }
         .sheet(isPresented: $creating) {
             NewQuestionSheet(store: store) { question in
                 showArchived = false

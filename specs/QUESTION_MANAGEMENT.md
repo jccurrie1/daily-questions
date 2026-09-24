@@ -27,6 +27,7 @@ Open the desktop window from the Dock to manage questions and view performance. 
 
 - Build the desktop UI in SwiftUI with the shared local SQLite-backed store. Use SwiftData with its local SQLite store.
 - Use the latest Liquid Glass sidebar with blurred wallpaper visible through it. Main content stays opaque and neutral. Use the approved character logo and Questions/Analytics navigation. No Today navigation.
+- Command+B opens or closes the desktop sidebar. Do not add a visible shortcut label, menu command, or toggle control for this shortcut.
 - The question list has Active and Archived views. New questions are active. The editor provides Save Changes and Cancel; active questions also have Archive.
 - Each question has a stable identifier, current text, creation date, and archive state/date. Answers refer to its stable identifier.
 - All questions use Yes/No and the fixed Monday–Friday schedule. Creating a question does not create earlier answers.
