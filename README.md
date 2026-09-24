@@ -1,5 +1,7 @@
 # Daily Questions
 
+The native macOS app stack is described in the [tech stack draft](specs/TECH_STACK.md).
+
 Record technical explanations and check them against repository documentation and source code.
 
 ## First topic: chat message flow
