@@ -68,9 +68,12 @@ struct DailyQuestionsApp: App {
     }
 
     private static var statusIcon: NSImage {
-        let icon = NSImage(named: "AppLogo") ?? NSImage()
-        icon.size = NSSize(width: 20, height: 20)
-        return icon
+        let logo = NSImage(named: "AppLogo") ?? NSImage()
+        return NSImage(size: NSSize(width: 20, height: 20), flipped: false) { bounds in
+            NSBezierPath(ovalIn: bounds).addClip()
+            logo.draw(in: bounds)
+            return true
+        }
     }
 
     private static func openStore() throws -> DailyStore {

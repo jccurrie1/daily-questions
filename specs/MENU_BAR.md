@@ -24,7 +24,7 @@ Click the app logo in the macOS menu bar to open today's active questions. Recor
 ## Implementation Decisions
 
 - Use one Swift/SwiftUI app with shared local SQLite-backed storage. Use SwiftData with its local SQLite store.
-- Use the approved character status icon and compact panel. Start with Today and the date; there is no branding or settings header.
+- Use the existing approved character logo in a circular menu bar status icon. Use a compact panel that starts with Today and the date; there is no branding or settings header.
 - Use small circular lowercase `y` and `n` controls with accessible names Yes and No. Either selected value uses charcoal.
 - Ask active questions Monday through Friday only. There is no day selector, schedule setting, or weekend answering.
 - No stored answer means unanswered. Never convert it to No.
