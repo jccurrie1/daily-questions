@@ -1,6 +1,16 @@
 # Daily Questions
 
-Daily Questions is a native macOS app in Swift and SwiftUI, with local SQLite storage. The MVP runs on Jared's Mac only.
+Daily Questions is a native macOS app in Swift and SwiftUI, with local SQLite storage.
+
+## Screenshots
+
+These previews show the Questions, menu-bar, and weekly performance views.
+
+![Questions view](designs/question-selection/expand-in-place.png)
+
+![Menu-bar panel](designs/menu-bar-mvp.png)
+
+![Weekly performance](designs/performance-mvp.png)
 
 Use the menu bar panel to answer today's questions with Yes or No. Open the desktop window from the Dock to create, view, edit, and archive questions, or select a question to see one Monday–Friday week of answers at a time.
 
