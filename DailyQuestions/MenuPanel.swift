@@ -17,7 +17,7 @@ struct MenuPanel: View {
                         .foregroundStyle(.secondary)
                 }
                 if !LocalDay.isWeekday(now) {
-                    Text("No questions on weekends").foregroundStyle(.secondary).padding(.vertical, 20)
+                    Text("It's the weekend. Take it easy.").foregroundStyle(.secondary).padding(.vertical, 20)
                 } else if active.isEmpty {
                     Text("No active questions").foregroundStyle(.secondary).padding(.vertical, 20)
                 } else {
