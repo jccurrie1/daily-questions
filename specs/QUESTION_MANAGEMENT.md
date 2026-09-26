@@ -29,6 +29,7 @@ Open the desktop window from the Dock to manage questions and view performance. 
 - Use the latest Liquid Glass sidebar with blurred wallpaper visible through it. Main content stays opaque and neutral. Use the approved character logo and Questions/Analytics navigation. No Today navigation.
 - Command+B opens or closes the desktop sidebar. Preserve the original sidebar design and native toggle button. Do not display Command+B shortcut text or add a menu command that advertises it.
 - The question list has Active and Archived views. New questions are active. The editor provides Save Changes and Cancel; active questions also have Archive.
+- Questions use one expandable list. Selecting a row opens its editor below the title and closes the previous row. Selecting the open row collapses it. New questions open automatically. Archived rows show read-only wording and View performance. Keep actions near the field and announce each row's expanded or collapsed state to accessibility tools.
 - Each question has a stable identifier, current text, creation date, and archive state/date. Answers refer to its stable identifier.
 - All questions use Yes/No and the fixed Monday–Friday schedule. Creating a question does not create earlier answers.
 - Reject empty or whitespace-only text. On save failure, keep entered text and show a factual error.

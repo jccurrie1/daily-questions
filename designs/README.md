@@ -1,6 +1,6 @@
 # Current MVP designs
 
-Use these three images for implementation. They revise the most recent character-logo and Liquid Glass designs to match the confirmed MVP. Earlier images and prompt files are historical sources, not implementation references.
+Use the images below for implementation. The selected expandable question list replaces the earlier two-column Questions design. The menu bar and performance references match the confirmed MVP. Earlier images and prompt files are historical sources, not implementation references.
 
 - Show one Monday–Friday week at a time in performance reports.
 - No desktop Today screen. Answer questions in the menu bar only.
@@ -46,7 +46,9 @@ This example has two Yes answers, one No, and two unanswered questions: 3 of 5 a
 
 Use Questions and Analytics navigation. Active and Archived lists keep archived question history accessible. Save Changes updates wording; Cancel discards the edit; Archive stops future prompts and preserves data. No Delete control. View performance opens the selected question's report. Archived records are viewable; restore is outside the MVP.
 
-![Questions with Liquid Glass sidebar and Archive instead of Delete](questions-mvp.png)
+Use the selected third [question-selection concept](question-selection/README.md): one list with an editor inside the expanded row. Only one question opens at a time; selecting it again collapses it. Keep the sidebar and existing question behavior.
+
+![Questions with an editor inside the selected row](question-selection/expand-in-place.png)
 
 ## Performance
 

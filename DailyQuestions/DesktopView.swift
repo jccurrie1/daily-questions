@@ -82,70 +82,63 @@ struct DesktopView: View {
                     .keyboardShortcut("n", modifiers: .command)
                 }
             }
-            HStack(alignment: .top, spacing: 16) {
-                VStack(spacing: 0) {
-                    Picker("Question status", selection: $showArchived) {
-                        Text("Active").tag(false)
-                        Text("Archived").tag(true)
-                    }
-                    .pickerStyle(.segmented).labelsHidden().padding(16)
-                    Divider()
-                    let questions = store.questions.filter { ($0.archivedDay != nil) == showArchived }
-                    if questions.isEmpty {
-                        Text(showArchived ? "No archived questions" : "No active questions")
-                            .foregroundStyle(.secondary)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    } else {
-                        ScrollView {
-                            LazyVStack(spacing: 0) {
-                                ForEach(questions) { question in
-                                    Button {
-                                        selectedID = question.id
-                                    } label: {
-                                        HStack {
-                                            Text(question.text)
-                                                .multilineTextAlignment(.leading)
-                                                .frame(maxWidth: .infinity, alignment: .leading)
-                                            if question.id == selectedID {
-                                                Image(systemName: "chevron.right").font(.caption)
-                                            }
-                                        }
-                                        .padding(.horizontal, 18).padding(.vertical, 22)
-                                        .contentShape(Rectangle())
-                                        .background(question.id == selectedID ? Color(white: 0.90) : .clear)
+            Picker("Question status", selection: $showArchived) {
+                Text("Active").tag(false)
+                Text("Archived").tag(true)
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+            .frame(width: 210, alignment: .leading)
+
+            let questions = store.questions.filter { ($0.archivedDay != nil) == showArchived }
+            if questions.isEmpty {
+                Text(showArchived ? "No archived questions" : "No active questions")
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                ScrollView {
+                    VStack(spacing: 0) {
+                        ForEach(questions) { question in
+                            let expanded = question.id == selectedID
+                            VStack(alignment: .leading, spacing: 0) {
+                                Button {
+                                    selectedID = expanded ? nil : question.id
+                                } label: {
+                                    HStack(alignment: .firstTextBaseline, spacing: 20) {
+                                        Image(systemName: expanded ? "chevron.down" : "chevron.right")
+                                            .font(.body.weight(.medium))
+                                            .frame(width: 16)
+                                            .accessibilityHidden(true)
+                                        Text(question.text)
+                                            .font(.system(size: 18, weight: expanded ? .semibold : .regular))
+                                            .multilineTextAlignment(.leading)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
                                     }
-                                    .buttonStyle(.plain)
-                                    .accessibilityLabel(question.text)
-                                    .accessibilityAddTraits(question.id == selectedID ? .isSelected : [])
-                                    Divider()
+                                    .padding(18)
+                                    .contentShape(Rectangle())
+                                }
+                                .buttonStyle(.plain)
+                                .accessibilityLabel(question.text)
+                                .accessibilityValue(expanded ? "Expanded" : "Collapsed")
+                                .accessibilityHint(expanded ? "Collapse question" : "Expand question")
+
+                                if expanded {
+                                    QuestionEditor(question: question, store: store) {
+                                        section = "Analytics"
+                                    } onArchive: {
+                                        selectedID = nil
+                                    }
+                                    .id(question.id)
+                                    .padding(.leading, 54)
+                                    .padding(.trailing, 18)
+                                    .padding(.bottom, 18)
                                 }
                             }
+                            .background(expanded ? Palette.surface : .clear)
+                            Divider()
                         }
                     }
                 }
-                .frame(width: 285)
-                .background(Palette.surface, in: RoundedRectangle(cornerRadius: 14))
-                .overlay(RoundedRectangle(cornerRadius: 14).stroke(Palette.border, lineWidth: 1))
-
-                Group {
-                    if let question = selectedQuestion, (question.archivedDay != nil) == showArchived {
-                        QuestionEditor(question: question, store: store) {
-                            section = "Analytics"
-                        } onArchive: {
-                            selectedID = nil
-                        }
-                        .id(question.id)
-                    } else {
-                        ContentUnavailableView {
-                            Label("Select a question", systemImage: "list.bullet")
-                        } description: {
-                            Text(section == "Analytics" ? "Select a question to view its weekly answers." : "Create a question or select one from the list.")
-                        }
-                    }
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Palette.surface, in: RoundedRectangle(cornerRadius: 14))
-                .overlay(RoundedRectangle(cornerRadius: 14).stroke(Palette.border, lineWidth: 1))
             }
         }
         .padding(28)
@@ -175,14 +168,6 @@ private struct QuestionEditor: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 22) {
-            HStack {
-                Text(question.archivedDay == nil ? "Edit Question" : "Question").font(.title2.bold())
-                Spacer()
-                Text(question.archivedDay == nil ? "Active" : "Archived")
-                    .font(.callout).foregroundStyle(.secondary)
-                    .padding(.horizontal, 14).padding(.vertical, 7)
-                    .background(Color(white: 0.93), in: Capsule())
-            }
             VStack(alignment: .leading, spacing: 8) {
                 Text("Question").font(.callout).foregroundStyle(.secondary)
                 if question.archivedDay == nil {
@@ -196,7 +181,6 @@ private struct QuestionEditor: View {
             Button("View performance", action: onPerformance)
                 .controlSize(.large)
             if let error { Text(error).foregroundStyle(.red).font(.callout) }
-            Spacer(minLength: 24)
             if question.archivedDay == nil {
                 Divider()
                 HStack {
@@ -217,7 +201,6 @@ private struct QuestionEditor: View {
                 .controlSize(.large)
             }
         }
-        .padding(22)
     }
 }
 

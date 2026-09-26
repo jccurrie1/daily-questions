@@ -1,5 +1,15 @@
 # MVP verification
 
+## Expandable question list — September 26, 2026
+
+- Normal macOS Debug build passed after implementing option 3. `scripts/check-store.sh` passed, including failed-save rollback and retry.
+- A separate verification build and store passed row expansion, switching, collapse, automatic selection after creation, cancel, blank-text validation, save, archive, archived read-only viewing, and navigation to the selected question's performance report.
+- Accessibility inspection confirmed named row buttons with Expanded/Collapsed values and hints.
+- Updated and opened `/Applications/Daily Questions.app`. Checked the final expanded layout against the selected concept without changing production records. See [design check](../design-qa.md) and its runtime screenshot.
+- `git diff --check` passed. Full VoiceOver operation was not tested.
+
+## Original MVP checks
+
 Date: September 24, 2026. Xcode 26.3, Swift 6.2.4, macOS 26.6.2, Apple Silicon.
 
 ## Build and automated checks
