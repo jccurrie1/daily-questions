@@ -179,7 +179,7 @@ private struct QuestionEditor: View {
                     Text(question.text).textSelection(.enabled)
                 }
             }
-            Button("View performance", action: onPerformance)
+            Button("View analytics", action: onPerformance)
                 .controlSize(.large)
             if let error { Text(error).foregroundStyle(.red).font(.callout) }
             if question.archivedDay == nil {
