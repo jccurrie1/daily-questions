@@ -31,7 +31,6 @@ struct DailyQuestionsApp: App {
                 }
             }
             .tint(Palette.ink)
-            .preferredColorScheme(.light)
         }
         .defaultSize(width: 1120, height: 740)
         .defaultPosition(.center)
@@ -41,7 +40,6 @@ struct DailyQuestionsApp: App {
             if let store {
                 MenuPanel(store: store)
                     .tint(Palette.ink)
-                    .preferredColorScheme(.light)
             } else {
                 Text("Cannot open local data. Open Daily Questions to retry.")
                     .foregroundStyle(.red)
@@ -60,7 +58,6 @@ struct DailyQuestionsApp: App {
             if let store {
                 MenuPanel(store: store)
                     .tint(Palette.ink)
-                    .preferredColorScheme(.light)
             }
         }
         .windowResizability(.contentSize)
@@ -95,8 +92,10 @@ struct DailyQuestionsApp: App {
 }
 
 enum Palette {
-    static let ink = Color(red: 0.10, green: 0.10, blue: 0.10)
-    static let background = Color(red: 0.96, green: 0.96, blue: 0.96)
-    static let surface = Color(red: 0.98, green: 0.98, blue: 0.98)
-    static let border = Color(white: 0.87)
+    static let ink = Color("Ink")
+    static let background = Color("Background")
+    static let surface = Color("Surface")
+    static let border = Color("Border")
+    static let selection = Color("Selection")
+    static let onInk = Color("OnInk")
 }

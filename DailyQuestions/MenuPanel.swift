@@ -72,8 +72,8 @@ struct MenuPanel: View {
         } label: {
             Text(label).font(.system(size: 16, weight: .medium))
                 .frame(width: 34, height: 34)
-                .foregroundStyle(saved?.value == value ? .white : Palette.ink)
-                .background(saved?.value == value ? Palette.ink : Color(white: 0.91), in: Circle())
+                .foregroundStyle(saved?.value == value ? Palette.onInk : Palette.ink)
+                .background(saved?.value == value ? Palette.ink : Palette.selection, in: Circle())
                 .contentShape(Circle())
         }
         .buttonStyle(AnswerBubbleStyle())

@@ -8,8 +8,6 @@ struct QuestionPerformanceView: View {
 
     @State private var selectedWeek: String?
 
-    private let ink = Color(white: 0.1)
-
     var body: some View {
         TimelineView(.periodic(from: .now, by: 1)) { context in
             ScrollView {
@@ -32,7 +30,7 @@ struct QuestionPerformanceView: View {
                                 .foregroundStyle(.secondary)
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 5)
-                                .background(Color(white: 0.9), in: Capsule())
+                                .background(Palette.selection, in: Capsule())
                         }
                     }
 
@@ -55,18 +53,18 @@ struct QuestionPerformanceView: View {
                         }
                     }
                     .padding(20)
-                    .background(Color(white: 0.985), in: RoundedRectangle(cornerRadius: 14))
+                    .background(Palette.surface, in: RoundedRectangle(cornerRadius: 14))
                     .overlay {
                         RoundedRectangle(cornerRadius: 14)
-                            .stroke(Color(white: 0.86), lineWidth: 1)
+                            .stroke(Palette.border, lineWidth: 1)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(28)
             }
         }
-        .background(Color(white: 0.96))
-        .foregroundStyle(ink)
+        .background(Palette.background)
+        .foregroundStyle(Palette.ink)
         .onChange(of: question.id) { _, _ in
             selectedWeek = nil
         }
@@ -115,7 +113,7 @@ struct QuestionPerformanceView: View {
                         y: .value("Answer", answer.value ? 1 : 0)
                     )
                     .symbolSize(100)
-                    .foregroundStyle(ink)
+                    .foregroundStyle(Palette.ink)
                     .accessibilityLabel(dayDate(index, today: today).formatted(dateFormat.weekday(.wide).month(.wide).day().year()))
                     .accessibilityValue(answer.value ? "Yes" : "No")
                 }
@@ -126,7 +124,7 @@ struct QuestionPerformanceView: View {
         .chartYAxis {
             AxisMarks(position: .leading, values: [0, 1]) { value in
                 AxisGridLine(stroke: StrokeStyle(lineWidth: 1))
-                    .foregroundStyle(Color(white: 0.88))
+                    .foregroundStyle(Palette.border)
                 AxisValueLabel {
                     Text(value.as(Int.self) == 1 ? "Yes" : "No")
                         .font(.callout)
@@ -137,14 +135,14 @@ struct QuestionPerformanceView: View {
         .chartXAxis {
             AxisMarks(values: [0, 1, 2, 3, 4]) { value in
                 AxisGridLine(stroke: StrokeStyle(lineWidth: 1))
-                    .foregroundStyle(Color(white: 0.9))
+                    .foregroundStyle(Palette.border)
                 AxisValueLabel(anchor: .top) {
                     if let index = value.as(Int.self) {
                         VStack(spacing: 8) {
                             Text(dayDate(index, today: today).formatted(dateFormat.weekday(.abbreviated).day()))
                                 .foregroundStyle(.secondary)
                             Text(answerLabel(index, today: today))
-                                .foregroundStyle(store.savedAnswer(for: question, day: dayKey(index, today: today)) == nil ? Color.secondary : ink)
+                                .foregroundStyle(store.savedAnswer(for: question, day: dayKey(index, today: today)) == nil ? Color.secondary : Palette.ink)
                         }
                         .font(.caption)
                         .multilineTextAlignment(.center)

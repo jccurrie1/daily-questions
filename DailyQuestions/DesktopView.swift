@@ -43,7 +43,7 @@ struct DesktopView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(.white)
+            .background(Palette.background)
         }
         .navigationTitle("")
         .toolbarBackground(.hidden, for: .windowToolbar)
@@ -236,7 +236,7 @@ private struct NewQuestionSheet: View {
             }
         }
         .padding(28).frame(width: 420)
-        .tint(Palette.ink).preferredColorScheme(.light)
+        .tint(Palette.ink)
         .onAppear { focused = true }
     }
 }
