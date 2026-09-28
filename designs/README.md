@@ -1,6 +1,6 @@
 # Current MVP designs
 
-Use the images below for implementation. The selected expandable question list replaces the earlier two-column Questions design. The menu bar and performance references match the confirmed MVP. Earlier images and prompt files are historical sources, not implementation references.
+Use the images below for the original MVP. The selected expandable question list replaces the earlier two-column Questions design. The menu bar and weekly performance references match that MVP. The newer [four-week activity mock-ups](../specs/FOUR_WEEK_ACTIVITY.md#further-notes) extend Analytics.
 
 - Show one Monday–Friday week at a time in performance reports.
 - No desktop Today screen. Answer questions in the menu bar only.
@@ -52,10 +52,10 @@ Use the selected third [question-selection concept](question-selection/README.md
 
 ## Performance
 
-Show one week with previous/next week controls and a date range. Default to the current week and disable next at that week. Use Yes/No marks and a separate missing-answer label. No editable answers, multiweek trends, scores, or ranking cards. Use current question wording for active and archived questions.
+The detailed report shows one week with previous/next controls and a date range. It defaults to the current week and disables next at that week. Use Yes/No marks and a separate missing-answer label. The [four-week activity overview](../specs/FOUR_WEEK_ACTIVITY.md) sits above it. No editable answers, scores, or ranking cards. Use current question wording for active and archived questions.
 
 ![Read-only single-week performance graph with Liquid Glass sidebar](performance-mvp.png)
 
 ## Historical references
 
-The [earlier glass previews](LIQUID_GLASS_PREVIEWS.md), [logo edits](LOGO_APPLICATION_PROMPTS.md), [palette edits](MONOCHROME_PROMPTS.md), and [initial edits](PROMPTS.md) are retained as design history. Their Today screens, Delete controls, and aggregate charts are superseded. Only the three images above are current implementation references.
+The [earlier glass previews](LIQUID_GLASS_PREVIEWS.md), [logo edits](LOGO_APPLICATION_PROMPTS.md), [palette edits](MONOCHROME_PROMPTS.md), and [initial edits](PROMPTS.md) are retained as design history. Their Today screens, Delete controls, and aggregate charts are superseded. The three images above document the original MVP; the four-week mock-ups document the newer Analytics overview.

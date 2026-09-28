@@ -8,7 +8,7 @@ The [project transcript](../transcript.md) defines three features:
 
 - A menu bar panel opened from the app logo, limited to viewing today's questions and answering Yes or No.
 - A desktop window opened from the Dock for creating, viewing, editing, and archiving questions.
-- A desktop performance view where selecting a question shows one Monday–Friday week of recorded answers at a time.
+- A desktop Analytics view where selecting a question shows four weeks of Yes activity and one Monday–Friday week of recorded answers in detail.
 
 Use the latest [design references](../designs/README.md): a Liquid Glass sidebar and opaque neutral main content. There is no desktop Today screen. Questions are never deleted, and saved answers cannot be updated.
 
@@ -60,7 +60,7 @@ SwiftUI menu bar + desktop views
 
 Keep the initial data model small: questions and answers associated with a question and a calendar day. The only answer choices are **Yes** and **No**, stored as a Boolean. Until the user selects one, no answer is recorded. Save at most one answer per question per day. Once saved, it cannot be replaced, cleared, or deleted, including on the current day. A failed save can be retried.
 
-Reports show one week at a time, defaulting to the current week, with previous/next week navigation up to the current week. Archived questions retain readable history. The menu bar completion footer counts both Yes and No as answered; reports do not show Yes-rate percentages or multiweek summaries.
+Analytics shows the current Monday–Friday week plus the three preceding weeks in a read-only Yes-activity grid. Its detailed report still shows one week at a time, defaulting to the current week, with previous/next week navigation up to the current week. Archived questions retain readable history. The menu bar completion footer counts both Yes and No as answered; Analytics counts Yes days without showing a Yes-rate percentage.
 
 The app uses a fixed five-day week: Monday through Friday. Users cannot select or change the days. Saturday and Sunday are excluded.
 

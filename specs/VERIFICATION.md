@@ -1,4 +1,11 @@
-# MVP verification
+# Verification
+
+## Four-week activity — September 28, 2026
+
+- The Debug verification build and `scripts/check-report.sh` passed. The report check covers four Monday–Friday rows, five time zones, weekend-to-Monday rollover, and a year boundary. `scripts/check-store.sh` passed.
+- In the app's isolated verification store, a saved Yes filled its date and displayed `1 Yes day`; a saved No and an unanswered date were both unfilled and displayed `0 Yes days`. The weekly chart retained the exact Yes, No, or Not answered value.
+- The grid exposed all 20 dates with exact answer statuses through accessibility labels and pointer help. Earlier dates before question creation and future dates were reported as No answer due. Switching questions updated the grid. No production records were changed.
+- The grid was visually checked in light appearance. Dark appearance was not visually verified in the running app.
 
 ## Expandable question list — September 26, 2026
 

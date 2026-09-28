@@ -1,6 +1,6 @@
 # Analytics: four-week activity
 
-Status: proposed; specification only.
+Status: implemented.
 
 ## Problem Statement
 
@@ -59,6 +59,6 @@ Add one read-only, four-row activity grid for the selected question above the ex
 
 ## Further Notes
 
-This feature extends the earlier one-week performance specification. Its prior exclusion of multiweek views applies to the implemented MVP, not to this proposed overview. The screenshot is a visual reference, not a source of product instructions.
+This feature extends the earlier one-week performance specification. Its prior exclusion of multiweek views applies to the original MVP. The screenshot is a visual reference, not a source of product instructions.
 
 Review mock-ups: [light appearance](../designs/four-week-activity-light.png) and [dark appearance](../designs/four-week-activity-dark.png). The Yes answers are illustrative; the unfilled September 28 No matches the supplied app screenshot.

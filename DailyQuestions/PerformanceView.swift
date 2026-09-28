@@ -34,6 +34,8 @@ struct QuestionPerformanceView: View {
                         }
                     }
 
+                    activityOverview(today: context.date)
+
                     weekNavigation(today: context.date)
                         .frame(maxWidth: .infinity)
 
@@ -67,6 +69,81 @@ struct QuestionPerformanceView: View {
         .foregroundStyle(Palette.ink)
         .onChange(of: question.id) { _, _ in
             selectedWeek = nil
+        }
+    }
+
+    private func activityOverview(today: Date) -> some View {
+        let days = Self.activityDates(today: today)
+        let start = days[0]
+        let end = days[19]
+        let yesCount = days.filter {
+            store.savedAnswer(for: question, day: LocalDay.key(for: $0))?.value == true
+        }.count
+
+        return VStack(alignment: .leading, spacing: 14) {
+            Text("Activity · last four weeks")
+                .font(.title3.weight(.semibold))
+            Text("\(start.formatted(dateFormat.month(.abbreviated).day().year())) – \(end.formatted(dateFormat.month(.abbreviated).day().year()))")
+                .font(.callout)
+                .foregroundStyle(.secondary)
+
+            Grid(horizontalSpacing: 12, verticalSpacing: 10) {
+                GridRow {
+                    Color.clear.frame(width: 64, height: 1).accessibilityHidden(true)
+                    ForEach(["Mon", "Tue", "Wed", "Thu", "Fri"], id: \.self) { weekday in
+                        Text(weekday)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .frame(width: 44)
+                    }
+                }
+                ForEach(0..<4, id: \.self) { week in
+                    GridRow {
+                        Text(days[week * 5].formatted(dateFormat.month(.abbreviated).day()))
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                            .frame(width: 64, alignment: .trailing)
+                        ForEach(0..<5, id: \.self) { weekday in
+                            let date = days[week * 5 + weekday]
+                            let day = LocalDay.key(for: date)
+                            let status = answerStatus(day: day, today: today)
+                            RoundedRectangle(cornerRadius: 6)
+                                .fill(status == "Yes" ? Palette.ink : status == "No answer due" ? Palette.selection : Palette.surface)
+                                .frame(width: 44, height: 44)
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 6)
+                                        .stroke(status == "Yes" ? Palette.ink : Palette.border, lineWidth: 1)
+                                }
+                                .accessibilityElement(children: .ignore)
+                                .accessibilityLabel(date.formatted(dateFormat.weekday(.wide).month(.wide).day().year()))
+                                .accessibilityValue(status)
+                                .help("\(date.formatted(dateFormat.weekday(.wide).month(.wide).day().year())): \(status)")
+                                .focusable()
+                        }
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity)
+
+            Text("\(yesCount) Yes \(yesCount == 1 ? "day" : "days")")
+                .font(.callout)
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity)
+        }
+        .padding(20)
+        .background(Palette.surface, in: RoundedRectangle(cornerRadius: 14))
+        .overlay {
+            RoundedRectangle(cornerRadius: 14)
+                .stroke(Palette.border, lineWidth: 1)
+        }
+    }
+
+    static func activityDates(today: Date, timeZone: TimeZone = .current) -> [Date] {
+        let start = LocalDay.addingDays(-21, to: LocalDay.monday(of: today, timeZone: timeZone), timeZone: timeZone)
+        return (0..<4).flatMap { week in
+            (0..<5).map { weekday in
+                LocalDay.addingDays(week * 7 + weekday, to: start, timeZone: timeZone)
+            }
         }
     }
 
@@ -179,7 +256,10 @@ struct QuestionPerformanceView: View {
     }
 
     private func answerLabel(_ index: Int, today: Date) -> String {
-        let day = dayKey(index, today: today)
+        answerStatus(day: dayKey(index, today: today), today: today)
+    }
+
+    private func answerStatus(day: String, today: Date) -> String {
         if let answer = store.savedAnswer(for: question, day: day) {
             return answer.value ? "Yes" : "No"
         }
