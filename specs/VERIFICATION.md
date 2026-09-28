@@ -5,7 +5,7 @@
 - The Debug verification build and `scripts/check-report.sh` passed. The report check covers four Monday–Friday rows, five time zones, weekend-to-Monday rollover, and a year boundary. `scripts/check-store.sh` passed.
 - In the app's isolated verification store, a saved Yes filled its date and displayed `1 Yes day`; a saved No and an unanswered date were both unfilled and displayed `0 Yes days`. The weekly chart retained the exact Yes, No, or Not answered value.
 - The grid exposed all 20 dates with exact answer statuses through accessibility labels and pointer help. Earlier dates before question creation and future dates were reported as No answer due. Switching questions updated the grid. No production records were changed.
-- The grid was visually checked in light appearance. Dark appearance was not visually verified in the running app.
+- The grid was visually checked in light and dark appearance. In dark appearance, a saved Yes filled the date white and updated the count to `1 Yes day`; No and unanswered dates stayed unfilled, and no-due dates stayed gray. The test used the isolated verification store. The system appearance was restored to Auto afterward.
 
 ## Expandable question list — September 26, 2026
 
