@@ -43,9 +43,10 @@ struct DesktopView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Palette.background)
+            .background(.white)
         }
         .navigationTitle("")
+        .toolbarBackground(.hidden, for: .windowToolbar)
         .frame(minWidth: 950, minHeight: 610)
         .foregroundStyle(Palette.ink)
         .background {
