@@ -108,7 +108,7 @@ struct QuestionPerformanceView: View {
                             let day = LocalDay.key(for: date)
                             let status = answerStatus(day: day, today: today)
                             RoundedRectangle(cornerRadius: 6)
-                                .fill(status == "Yes" ? Palette.ink : status == "No answer due" ? Palette.selection : Palette.surface)
+                                .fill(status == "Yes" ? Palette.ink : Palette.selection)
                                 .frame(width: 44, height: 44)
                                 .overlay {
                                     RoundedRectangle(cornerRadius: 6)
