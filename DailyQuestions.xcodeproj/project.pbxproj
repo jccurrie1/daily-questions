@@ -11,6 +11,7 @@
 		B00000000000000000000021 /* MenuPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000021 /* MenuPanel.swift */; };
 		B00000000000000000000022 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000022 /* Models.swift */; };
 		B00000000000000000000023 /* PerformanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000023 /* PerformanceView.swift */; };
+		B00000000000000000000025 /* AnalyticsOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000025 /* AnalyticsOverview.swift */; };
 		B00000000000000000000024 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000024 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -21,6 +22,7 @@
 		A00000000000000000000021 /* MenuPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuPanel.swift; sourceTree = "<group>"; };
 		A00000000000000000000022 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		A00000000000000000000023 /* PerformanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceView.swift; sourceTree = "<group>"; };
+		A00000000000000000000025 /* AnalyticsOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsOverview.swift; sourceTree = "<group>"; };
 		A00000000000000000000024 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -36,7 +38,7 @@
 		};
 		A00000000000000000000006 /* DailyQuestions */ = {
 			isa = PBXGroup;
-			children = (A00000000000000000000002 /* DailyQuestionsApp.swift */, A00000000000000000000020 /* DesktopView.swift */, A00000000000000000000021 /* MenuPanel.swift */, A00000000000000000000022 /* Models.swift */, A00000000000000000000023 /* PerformanceView.swift */, A00000000000000000000024 /* Assets.xcassets */);
+			children = (A00000000000000000000002 /* DailyQuestionsApp.swift */, A00000000000000000000020 /* DesktopView.swift */, A00000000000000000000021 /* MenuPanel.swift */, A00000000000000000000022 /* Models.swift */, A00000000000000000000023 /* PerformanceView.swift */, A00000000000000000000025 /* AnalyticsOverview.swift */, A00000000000000000000024 /* Assets.xcassets */);
 			path = DailyQuestions;
 			sourceTree = "<group>";
 		};
@@ -89,7 +91,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		A00000000000000000000009 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A00000000000000000000001 /* DailyQuestionsApp.swift in Sources */, B00000000000000000000020 /* DesktopView.swift in Sources */, B00000000000000000000021 /* MenuPanel.swift in Sources */, B00000000000000000000022 /* Models.swift in Sources */, B00000000000000000000023 /* PerformanceView.swift in Sources */); runOnlyForDeploymentPostprocessing = 0; };
+		A00000000000000000000009 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A00000000000000000000001 /* DailyQuestionsApp.swift in Sources */, B00000000000000000000020 /* DesktopView.swift in Sources */, B00000000000000000000021 /* MenuPanel.swift in Sources */, B00000000000000000000022 /* Models.swift in Sources */, B00000000000000000000023 /* PerformanceView.swift in Sources */, B00000000000000000000025 /* AnalyticsOverview.swift in Sources */); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */

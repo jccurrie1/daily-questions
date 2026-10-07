@@ -4,6 +4,8 @@ struct DesktopView: View {
     let store: DailyStore
     @State private var section = "Questions"
     @State private var selectedID: UUID?
+    @State private var analyticsQuestionID: UUID?
+    @State private var analyticsBackSection = "Analytics"
     @State private var showArchived = false
     @State private var creating = false
     @State private var sidebarVisibility: NavigationSplitViewVisibility = .all
@@ -24,7 +26,7 @@ struct DesktopView: View {
                     Text("Daily Questions").font(.title2.bold())
                 }
                 .padding(.horizontal, 24).padding(.top, 24)
-                List(selection: $section) {
+                List(selection: Binding(get: { section }, set: { section = $0; analyticsQuestionID = nil })) {
                     Label("Questions", systemImage: "list.bullet").tag("Questions")
                     Label("Analytics", systemImage: "chart.bar.xaxis").tag("Analytics")
                 }
@@ -34,9 +36,17 @@ struct DesktopView: View {
             .navigationSplitViewColumnWidth(min: 210, ideal: 230, max: 260)
         } detail: {
             Group {
-                if section == "Analytics", let question = selectedQuestion {
-                    QuestionPerformanceView(question: question, store: store) {
-                        section = "Questions"
+                if section == "Analytics" {
+                    if let question = store.questions.first(where: { $0.id == analyticsQuestionID }) {
+                        QuestionPerformanceView(question: question, store: store, backTitle: analyticsBackSection) {
+                            analyticsQuestionID = nil
+                            section = analyticsBackSection
+                        }
+                    } else {
+                        AnalyticsOverview(store: store) { question in
+                            analyticsBackSection = "Analytics"
+                            analyticsQuestionID = question.id
+                        }
                     }
                 } else {
                     questionBrowser
@@ -125,6 +135,8 @@ struct DesktopView: View {
 
                                 if expanded {
                                     QuestionEditor(question: question, store: store) {
+                                        analyticsBackSection = "Questions"
+                                        analyticsQuestionID = question.id
                                         section = "Analytics"
                                     } onArchive: {
                                         selectedID = nil

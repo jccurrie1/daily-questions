@@ -22,6 +22,7 @@ Daily Questions MVP specifications:
 - [Desktop question management](specs/QUESTION_MANAGEMENT.md)
 - [Desktop question performance](specs/QUESTION_PERFORMANCE.md)
 - [Four-week activity overview](specs/FOUR_WEEK_ACTIVITY.md)
+- [Analytics overview](specs/ANALYTICS_OVERVIEW.md)
 
 ## Xcode project
 
@@ -46,6 +47,7 @@ Run the model and date checks on this Mac:
 ```sh
 scripts/check-store.sh
 scripts/check-report.sh
+scripts/check-analytics.sh
 ```
 
 The checks use temporary stores and do not modify app data. They cover persistence, immutable answers, archive history, failed-save rollback and retry, weekday rules, DST, midnight, and time-zone changes.

@@ -4,6 +4,7 @@ import SwiftUI
 struct QuestionPerformanceView: View {
     let question: DailyQuestion
     let store: DailyStore
+    var backTitle = "Questions"
     var onBack: (() -> Void)? = nil
 
     @State private var selectedWeek: String?
@@ -14,7 +15,7 @@ struct QuestionPerformanceView: View {
                 VStack(alignment: .leading, spacing: 24) {
                     if let onBack {
                         Button(action: onBack) {
-                            Label("Questions", systemImage: "chevron.left")
+                            Label(backTitle, systemImage: "chevron.left")
                         }
                         .buttonStyle(.plain)
                         .foregroundStyle(.secondary)
