@@ -31,7 +31,7 @@ Add one read-only, four-row activity grid for the selected question above the ex
 
 ## Implementation Decisions
 
-- The grid belongs to the existing per-question Analytics page, above the current weekly navigation and chart. Selecting another question changes both views. Keep the weekly view's current-week default and navigation behavior.
+- The grid belongs to the existing per-question Analytics page, above the Week in detail card, which holds its own week navigation. Selecting another question changes both views. Keep the weekly view's current-week default and navigation behavior.
 - Use four consecutive **calendar weeks**, each Monday through Friday: the week containing the Mac's current local date plus the three preceding weeks. The current week stays in view on Saturday and Sunday; advance the window at local midnight on Monday. For example, on September 28, 2026, show September 7–11, 14–18, 21–25, and September 28–October 2.
 - Use one grid with exactly five columns labeled Mon, Tue, Wed, Thu, Fri, and exactly four rows ordered oldest to newest. Give each row a compact week-start date label and show the full date span above the grid. Crossing a month or year boundary does not split a row. Do not draw Saturday or Sunday columns or cells.
 - Show all five dates of the current week to preserve the grid shape. Future dates, dates before the question's creation, and dates after its archive date have **No answer due** status. An answer saved on the archive date stays visible.

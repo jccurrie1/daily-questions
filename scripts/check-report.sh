@@ -11,6 +11,7 @@ enum Palette {
     static let surface = Color.primary
     static let border = Color.primary
     static let selection = Color.primary
+    static let onInk = Color.primary
 }
 SWIFT
 xcrun swiftc -swift-version 6 -parse-as-library -target arm64-apple-macos26.0 \

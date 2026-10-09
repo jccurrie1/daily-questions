@@ -1,5 +1,11 @@
 # Verification
 
+## Week in detail — October 8, 2026
+
+- Replaced the Swift Charts weekly graph with a Week in detail card: the previous/next controls and date range moved into the card header, and the week is drawn as five dated cells (filled Yes, outlined No, plain dim cells for any day without a saved answer) with a Yes/No legend and no empty-week message. The Debug build and `scripts/check-report.sh` passed; `git diff --check` passed.
+- Opened the installed Debug build against existing records without changing them. Checked the current week, a week with a saved No, and a week before the question's creation, which showed unmarked cells. The header row did not wrap at the 950-point minimum window width.
+- Cells keep the date and answer status as accessibility label and value and as pointer help. Full VoiceOver operation was not tested.
+
 ## Four-week activity — September 28, 2026
 
 - The Debug verification build and `scripts/check-report.sh` passed. The report check covers four Monday–Friday rows, five time zones, weekend-to-Monday rollover, and a year boundary. `scripts/check-store.sh` passed.

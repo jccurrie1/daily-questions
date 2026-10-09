@@ -15,27 +15,27 @@ Select an active or archived question and view its recorded answers for one Mond
 ## User Stories
 
 1. As the user, I want a report for one question, so that I can inspect that activity's answers.
-2. As the user, I want the current question wording above the graph, so that I can identify the activity.
+2. As the user, I want the current question wording above the report, so that I can identify the activity.
 3. As the user, I want five dated weekday positions, so that I can read the week in order.
 4. As the user, I want Yes, No, and missing answers to look different, so that missing data does not imply No.
 5. As the user, I want to move between weeks, so that I can inspect history one week at a time.
 6. As the user, I want archived question history, so that stopping a question does not remove its records.
-7. As the user, I want labels as well as chart marks, so that I can read results without relying on color.
+7. As the user, I want labels as well as cell shapes, so that I can read results without relying on color.
 
 ## Implementation Decisions
 
-- Use the shared local question and answer store. Use Swift Charts.
+- Use the shared local question and answer store. Draw the week with SwiftUI shapes; Swift Charts is no longer used.
 - Follow the latest Liquid Glass sidebar design, with opaque neutral main content. No desktop Today screen.
 - Show exactly one calendar week, Monday through Friday, with its date range and weekday dates. Do not aggregate across weeks.
 - Default to the current week. Previous/next controls move one week at a time; disable next at the current week. On weekends, show that week's Monday–Friday records.
 - Read only the selected question's answers within that week. Archived questions use the same report.
-- Use separate Yes and No levels with discrete marks and weekday labels. Do not connect marks with a trend line.
-- Missing answers have no Yes/No mark and a factual label such as Not answered. This is not a third answer option and must not become a stored No.
+- Show the week as one row of five dated cells inside a "Week in detail" card, with the previous/next controls and date range in that card's header so they visibly belong to it. A filled cell labelled Yes and an outlined cell labelled No are the only marked states; a day without a saved answer is a plain dim cell with no label, and the legend lists only Yes and No. Do not draw a trend line.
+- Missing answers have no Yes/No mark. Their status (Not answered or No answer due) is exposed through accessibility and pointer help only. This is not a third answer option and must not become a stored No.
 - Future days, days before creation, and days after archiving have no answer due. Label them as such instead of missed answers. Retain any saved answer on the archive date. Do not invent historical answers.
 - Use current question wording for every week, even if it changed after answers were saved.
 - Show new saved menu bar answers when the report is open or reopened. Saved values cannot be edited from any app surface.
 - Derive the report from saved answers; do not maintain a separate performance database.
-- If a week has no saved answers, show a factual empty state and weekday labels, not a failure score.
+- If a week has no saved answers, show the five dated cells unmarked. There is no empty-state message and no failure score.
 
 ## Testing Decisions
 

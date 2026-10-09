@@ -1,4 +1,3 @@
-import Charts
 import SwiftUI
 
 struct QuestionPerformanceView: View {
@@ -37,23 +36,22 @@ struct QuestionPerformanceView: View {
 
                     activityOverview(today: context.date)
 
-                    weekNavigation(today: context.date)
-                        .frame(maxWidth: .infinity)
-
-                    VStack(alignment: .leading, spacing: 20) {
-                        Text("Weekly answers")
-                            .font(.title3.weight(.semibold))
-
-                        weeklyChart(today: context.date)
-                            .frame(height: 245)
-
-                        if !(0..<5).contains(where: { index in
-                            store.savedAnswer(for: question, day: dayKey(index, today: context.date)) != nil
-                        }) {
-                            Text("No answers recorded for this week.")
-                                .font(.callout)
-                                .foregroundStyle(.secondary)
+                    VStack(alignment: .leading, spacing: 18) {
+                        HStack(alignment: .center, spacing: 16) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Week in detail")
+                                    .font(.title3.weight(.semibold))
+                                Text("Each saved answer for one Monday–Friday week")
+                                    .font(.callout)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer(minLength: 8)
+                            weekNavigation(today: context.date)
                         }
+
+                        weekStrip(today: context.date)
+
+                        legend
                     }
                     .padding(20)
                     .background(Palette.surface, in: RoundedRectangle(cornerRadius: 14))
@@ -149,7 +147,7 @@ struct QuestionPerformanceView: View {
     }
 
     private func weekNavigation(today: Date) -> some View {
-        HStack(spacing: 18) {
+        HStack(spacing: 12) {
             Button {
                 selectedWeek = LocalDay.key(for: LocalDay.addingDays(-7, to: weekStart(today: today)))
             } label: {
@@ -164,7 +162,7 @@ struct QuestionPerformanceView: View {
             Text(weekRange(today: today))
                 .font(.body.weight(.medium))
                 .monospacedDigit()
-                .frame(minWidth: 195)
+                .frame(minWidth: 170)
                 .accessibilityLabel("Week of \(weekRange(today: today))")
 
             Button {
@@ -182,59 +180,70 @@ struct QuestionPerformanceView: View {
         }
     }
 
-    private func weeklyChart(today: Date) -> some View {
-        Chart {
+    private func weekStrip(today: Date) -> some View {
+        HStack(alignment: .top, spacing: 12) {
             ForEach(0..<5, id: \.self) { index in
-                if let answer = store.savedAnswer(for: question, day: dayKey(index, today: today)) {
-                    PointMark(
-                        x: .value("Weekday", Double(index)),
-                        y: .value("Answer", answer.value ? 1 : 0)
-                    )
-                    .symbolSize(100)
-                    .foregroundStyle(Palette.ink)
-                    .accessibilityLabel(dayDate(index, today: today).formatted(dateFormat.weekday(.wide).month(.wide).day().year()))
-                    .accessibilityValue(answer.value ? "Yes" : "No")
-                }
-            }
-        }
-        .chartXScale(domain: -0.5...4.5)
-        .chartYScale(domain: -0.5...1.5)
-        .chartYAxis {
-            AxisMarks(position: .leading, values: [0, 1]) { value in
-                AxisGridLine(stroke: StrokeStyle(lineWidth: 1))
-                    .foregroundStyle(Palette.border)
-                AxisValueLabel {
-                    Text(value.as(Int.self) == 1 ? "Yes" : "No")
-                        .font(.callout)
+                let date = dayDate(index, today: today)
+                let status = answerLabel(index, today: today)
+                VStack(spacing: 10) {
+                    Text(date.formatted(dateFormat.weekday(.abbreviated)))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    dayCell(status: status)
+                    Text(date.formatted(dateFormat.month(.abbreviated).day()))
+                        .font(.caption)
                         .foregroundStyle(.secondary)
                 }
+                .frame(maxWidth: .infinity)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(date.formatted(dateFormat.weekday(.wide).month(.wide).day().year()))
+                .accessibilityValue(status)
+                .help("\(date.formatted(dateFormat.weekday(.wide).month(.wide).day().year())): \(status)")
+                .focusable()
             }
         }
-        .chartXAxis {
-            AxisMarks(values: [0, 1, 2, 3, 4]) { value in
-                AxisGridLine(stroke: StrokeStyle(lineWidth: 1))
-                    .foregroundStyle(Palette.border)
-                AxisValueLabel(anchor: .top) {
-                    if let index = value.as(Int.self) {
-                        VStack(spacing: 8) {
-                            Text(dayDate(index, today: today).formatted(dateFormat.weekday(.abbreviated).day()))
-                                .foregroundStyle(.secondary)
-                            Text(answerLabel(index, today: today))
-                                .foregroundStyle(store.savedAnswer(for: question, day: dayKey(index, today: today)) == nil ? Color.secondary : Palette.ink)
-                        }
-                        .font(.caption)
-                        .multilineTextAlignment(.center)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .padding(.top, 8)
-                    }
+        .padding(.top, 2)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Week in detail, \(weekRange(today: today))")
+    }
+
+    private func dayCell(status: String) -> some View {
+        let saved = status == "Yes" || status == "No"
+        return RoundedRectangle(cornerRadius: 12)
+            .fill(status == "Yes" ? Palette.ink : (saved ? Color.clear : Palette.selection))
+            .frame(width: 64, height: 64)
+            .overlay {
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(status == "Yes" ? Palette.ink : (status == "No" ? Color.secondary : Palette.border), lineWidth: 2)
+            }
+            .overlay {
+                if saved {
+                    Text(status)
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(status == "Yes" ? Palette.onInk : Palette.ink)
                 }
             }
+    }
+
+    private var legend: some View {
+        HStack(spacing: 22) {
+            legendItem("Yes") {
+                RoundedRectangle(cornerRadius: 4).fill(Palette.ink)
+            }
+            legendItem("No") {
+                RoundedRectangle(cornerRadius: 4).stroke(Color.secondary, lineWidth: 2)
+            }
         }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Weekly answers, \(weekRange(today: today))")
-        .accessibilityValue((0..<5).map { index in
-            "\(dayDate(index, today: today).formatted(dateFormat.weekday(.wide).month(.wide).day().year())): \(answerLabel(index, today: today))"
-        }.joined(separator: ". "))
+        .font(.caption)
+        .foregroundStyle(.secondary)
+        .accessibilityHidden(true)
+    }
+
+    private func legendItem(_ label: String, @ViewBuilder swatch: () -> some View) -> some View {
+        HStack(spacing: 8) {
+            swatch().frame(width: 14, height: 14)
+            Text(label)
+        }
     }
 
     // Keep a calendar date for history; an absolute midnight can become Sunday after a time-zone change.
