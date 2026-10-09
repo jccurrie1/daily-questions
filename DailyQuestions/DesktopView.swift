@@ -9,6 +9,7 @@ struct DesktopView: View {
     @State private var showArchived = false
     @State private var creating = false
     @State private var sidebarVisibility: NavigationSplitViewVisibility = .all
+    @State private var sidebarToggling = false
 
     private var selectedQuestion: DailyQuestion? {
         store.questions.first { $0.id == selectedID }
@@ -61,8 +62,14 @@ struct DesktopView: View {
         .foregroundStyle(Palette.ink)
         .background {
             Button("") {
-                withAnimation {
+                guard !sidebarToggling else { return }
+                sidebarToggling = true
+                withAnimation(.smooth) {
                     sidebarVisibility = sidebarVisibility == .detailOnly ? .all : .detailOnly
+                }
+                Task { @MainActor in
+                    try? await Task.sleep(for: .seconds(0.5))
+                    sidebarToggling = false
                 }
             }
             .keyboardShortcut("b", modifiers: .command)
