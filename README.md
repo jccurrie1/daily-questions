@@ -2,6 +2,10 @@
 
 Daily Questions is a native macOS app in Swift and SwiftUI, with local SQLite storage.
 
+## Demo
+
+[Watch the launch video](videos/daily-questions-launch-web.mp4) (MP4, 5.5 MB) for a walkthrough of the menu bar panel and desktop window.
+
 ## Screenshots
 
 These screenshots show the Questions and weekly report views in the macOS app.
