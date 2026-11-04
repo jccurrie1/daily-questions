@@ -10,11 +10,15 @@ struct MenuPanel: View {
             let day = LocalDay.key(for: now)
             let active = store.questions.filter { $0.archivedDay == nil && $0.createdDay <= day }
             VStack(alignment: .leading, spacing: 16) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Today").font(.title2.bold())
-                    Text(now, format: Date.FormatStyle(calendar: LocalDay.calendar(), timeZone: .current)
-                        .weekday(.abbreviated).month(.abbreviated).day().year())
-                        .foregroundStyle(.secondary)
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Today").font(.title2.bold())
+                        Text(now, format: Date.FormatStyle(calendar: LocalDay.calendar(), timeZone: .current)
+                            .weekday(.abbreviated).month(.abbreviated).day().year())
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    OpenWindowButton()
                 }
                 if !LocalDay.isWeekday(now) {
                     Text("It's the weekend. Take it easy.").foregroundStyle(.secondary).padding(.vertical, 20)
@@ -81,6 +85,26 @@ struct MenuPanel: View {
         .accessibilityLabel("\(value ? "Yes" : "No") — \(question.text)")
         .accessibilityValue(saved.map { "Saved \($0.value ? "Yes" : "No"). Cannot be changed." } ?? "Not answered")
         .help(saved == nil ? (value ? "Answer Yes" : "Answer No") : "Saved answers cannot be changed")
+    }
+}
+
+struct OpenWindowButton: View {
+    @Environment(\.openWindow) private var openWindow
+
+    var body: some View {
+        Button {
+            openWindow(id: "main")
+            DockIcon.show()
+        } label: {
+            Image(systemName: "macwindow")
+                .imageScale(.large)
+                .frame(width: 28, height: 28)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .foregroundStyle(.secondary)
+        .help("Open Daily Questions")
+        .accessibilityLabel("Open Daily Questions")
     }
 }
 

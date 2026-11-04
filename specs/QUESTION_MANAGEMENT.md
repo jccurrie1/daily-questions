@@ -10,11 +10,11 @@ The user needs to create, view, edit, and archive daily questions without losing
 
 ## Solution
 
-Open the desktop window from the Dock to manage questions and view performance. Use the latest Liquid Glass sidebar design. There is no desktop Today screen, and questions are never deleted.
+Open the desktop window from the menu bar panel to manage questions and view performance. The app appears in the Dock only while this window is open. Use the latest Liquid Glass sidebar design. There is no desktop Today screen, and questions are never deleted.
 
 ## User Stories
 
-1. As the user, I want to open the app from the Dock, so that I can manage questions in a desktop window.
+1. As the user, I want to open the desktop window from the menu bar panel, so that I can manage questions without the app always taking a place in the Dock.
 2. As the user, I want to create a question, so that I can track another activity.
 3. As the user, I want to edit question wording, so that I can correct or clarify it.
 4. As the user, I want to cancel an edit, so that I can retain the saved wording.

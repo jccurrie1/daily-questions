@@ -1,5 +1,13 @@
 # Verification
 
+## Dock icon only while the window is open — November 4, 2026
+
+- Normal Debug and verification builds passed. The built `Info.plist` contains `LSUIElement = true`.
+- Using the isolated verification store, `lsappinfo` reported the app as `Foreground` (in the Dock) at launch with the desktop window open, and as `UIElement` (not in the Dock) after closing it, with the app still running.
+- With the desktop window closed, the Open Daily Questions icon in the `MenuPanel` verification window reopened the desktop window and returned the app to `Foreground`. Reopening the running app from Finder with `open` did the same.
+- With no Dock icon and only the panel window open, Command-Q quit the app.
+- Not tested: clicking the real menu bar icon, and whether the reopened window comes to the front when the panel is used while another app is active. During the background computer-use test, the window reopened but Chrome stayed frontmost.
+
 ## Week in detail — October 8, 2026
 
 - Replaced the Swift Charts weekly graph with a Week in detail card: the previous/next controls and date range moved into the card header, and the week is drawn as five dated cells (filled Yes, outlined No, plain dim cells for any day without a saved answer) with a Yes/No legend and no empty-week message. The Debug build and `scripts/check-report.sh` passed; `git diff --check` passed.

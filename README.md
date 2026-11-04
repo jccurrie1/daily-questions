@@ -16,7 +16,7 @@ These screenshots show the Questions and weekly report views in the macOS app.
 
 ![Weekly report](screenshots/weekly.png)
 
-Use the menu bar panel to answer today's questions with Yes or No. Open the desktop window from the Dock to create, view, edit, and archive questions, or select a question to see four weeks of Yes activity and inspect one Monday–Friday week of answers at a time.
+Use the menu bar panel to answer today's questions with Yes or No. Open the desktop window with the window icon at the top right of the panel to create, view, edit, and archive questions, or select a question to see four weeks of Yes activity and inspect one Monday–Friday week of answers at a time. The app shows in the Dock only while the desktop window is open. Press Command-Q while the panel or window is focused to quit.
 
 The schedule is fixed to Monday through Friday. There is no day selection, desktop Today screen, or streak tracking. Saved answers cannot be changed. Questions are never deleted: archiving stops daily prompts and keeps history. Editing question wording updates its label in all reports without changing answers.
 

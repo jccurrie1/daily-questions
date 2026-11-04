@@ -31,6 +31,8 @@ struct DailyQuestionsApp: App {
                 }
             }
             .tint(Palette.ink)
+            .onAppear { DockIcon.show() }
+            .onDisappear { DockIcon.hide() }
         }
         .defaultSize(width: 1120, height: 740)
         .defaultPosition(.center)
@@ -41,10 +43,15 @@ struct DailyQuestionsApp: App {
                 MenuPanel(store: store)
                     .tint(Palette.ink)
             } else {
-                Text("Cannot open local data. Open Daily Questions to retry.")
-                    .foregroundStyle(.red)
-                    .padding()
-                    .frame(width: 300)
+                HStack(alignment: .top, spacing: 12) {
+                    Text("Cannot open local data. Open Daily Questions to retry.")
+                        .foregroundStyle(.red)
+                    Spacer()
+                    OpenWindowButton()
+                }
+                .padding(20)
+                .frame(width: 340)
+                .tint(Palette.ink)
             }
         } label: {
             Image(nsImage: Self.statusIcon)
@@ -88,6 +95,18 @@ struct DailyQuestionsApp: App {
         }
         #endif
         return try DailyStore()
+    }
+}
+
+@MainActor
+enum DockIcon {
+    static func show() {
+        NSApp.setActivationPolicy(.regular)
+        NSApp.activate()
+    }
+
+    static func hide() {
+        NSApp.setActivationPolicy(.accessory)
     }
 }
 

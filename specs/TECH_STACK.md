@@ -7,7 +7,7 @@ Status: implemented MVP. Native macOS, Swift, SwiftUI, and local SQLite storage 
 The [project transcript](../transcript.md) defines three features:
 
 - A menu bar panel opened from the app logo, limited to viewing today's questions and answering Yes or No.
-- A desktop window opened from the Dock for creating, viewing, editing, and archiving questions.
+- A desktop window opened from the menu bar panel for creating, viewing, editing, and archiving questions.
 - A desktop Analytics view where selecting a question shows four weeks of Yes activity and one Monday–Friday week of recorded answers in detail.
 
 Use the latest [design references](../designs/README.md): a Liquid Glass sidebar and opaque neutral main content. There is no desktop Today screen. Questions are never deleted, and saved answers cannot be updated.

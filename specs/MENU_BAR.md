@@ -24,7 +24,7 @@ Click the app logo in the macOS menu bar to open today's active questions. Recor
 ## Implementation Decisions
 
 - Use one Swift/SwiftUI app with shared local SQLite-backed storage. Use SwiftData with its local SQLite store.
-- Use the existing approved character logo in a circular menu bar status icon. Use a compact panel that starts with Today and the date; there is no branding or settings header.
+- Use the existing approved character logo in a circular menu bar status icon. Use a compact panel that starts with Today and the date; there is no branding or settings header. A small window icon at the top right, labeled Open Daily Questions, opens the desktop window.
 - Use small circular lowercase `y` and `n` controls with accessible names Yes and No. Either selected value uses charcoal.
 - Ask active questions Monday through Friday only. There is no day selector, schedule setting, or weekend answering.
 - No stored answer means unanswered. Never convert it to No.
@@ -36,7 +36,7 @@ Click the app logo in the macOS menu bar to open today's active questions. Recor
 - UI API: SwiftUI `MenuBarExtra` with window style.
 - Empty text: "No active questions" on weekdays with none; "No questions on weekends" on Saturday or Sunday. Do not show previous-day answer controls.
 - Use the Mac's local date, with each day starting at midnight. Save Gregorian date keys (YYYY-MM-DD); changing time zone must not move existing answers to another date. Refresh the panel at day boundaries.
-- App behavior: closing the desktop window leaves the menu bar available; quitting ends both.
+- App behavior: closing the desktop window leaves the menu bar available; quitting ends both. The app launches without a Dock icon (`LSUIElement`), shows in the Dock and Command-Tab while the desktop window is open, and leaves the Dock when it closes. Reopening the app from Finder or Spotlight also opens the desktop window. There is no Quit button; Command-Q quits while the panel or window is focused.
 
 ## Testing Decisions
 
