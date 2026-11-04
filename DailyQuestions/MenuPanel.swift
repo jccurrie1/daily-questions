@@ -96,13 +96,13 @@ struct OpenWindowButton: View {
             openWindow(id: "main")
             DockIcon.show()
         } label: {
-            Image(systemName: "macwindow")
-                .imageScale(.large)
+            Image("AppLogo")
+                .resizable().scaledToFit()
                 .frame(width: 28, height: 28)
+                .clipShape(RoundedRectangle(cornerRadius: 6.5))
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .foregroundStyle(.secondary)
         .help("Open Daily Questions")
         .accessibilityLabel("Open Daily Questions")
     }
