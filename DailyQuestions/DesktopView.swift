@@ -2,6 +2,7 @@ import SwiftUI
 
 struct DesktopView: View {
     let store: DailyStore
+    let sync: SyncCoordinator
     @State private var section = "Questions"
     @State private var selectedID: UUID?
     @State private var analyticsQuestionID: UUID?
@@ -30,6 +31,7 @@ struct DesktopView: View {
                 List(selection: Binding(get: { section }, set: { section = $0; analyticsQuestionID = nil })) {
                     Label("Questions", systemImage: "list.bullet").tag("Questions")
                     Label("Analytics", systemImage: "chart.bar.xaxis").tag("Analytics")
+                    Label("Settings", systemImage: "gearshape").tag("Settings")
                 }
                 .listStyle(.sidebar)
                 .scrollContentBackground(.hidden)
@@ -37,7 +39,9 @@ struct DesktopView: View {
             .navigationSplitViewColumnWidth(min: 210, ideal: 230, max: 260)
         } detail: {
             Group {
-                if section == "Analytics" {
+                if section == "Settings" {
+                    MacSettingsView(sync: sync)
+                } else if section == "Analytics" {
                     if let question = store.questions.first(where: { $0.id == analyticsQuestionID }) {
                         QuestionPerformanceView(question: question, store: store, backTitle: analyticsBackSection) {
                             analyticsQuestionID = nil
@@ -84,6 +88,7 @@ struct DesktopView: View {
                 section = "Questions"
             }
         }
+        .task { await sync.syncNow() }
     }
 
     private var questionBrowser: some View {

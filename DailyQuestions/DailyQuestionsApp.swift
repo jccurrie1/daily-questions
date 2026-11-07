@@ -4,17 +4,21 @@ import SwiftUI
 @main
 struct DailyQuestionsApp: App {
     @State private var store: DailyStore?
+    @State private var sync: SyncCoordinator?
     @State private var startupError: String?
 
     init() {
-        do { _store = State(initialValue: try Self.openStore()) }
-        catch { _startupError = State(initialValue: error.localizedDescription) }
+        do {
+            let store = try Self.openStore()
+            _store = State(initialValue: store)
+            _sync = State(initialValue: SyncCoordinator(store: store))
+        } catch { _startupError = State(initialValue: error.localizedDescription) }
     }
 
     var body: some Scene {
         Window("Daily Questions", id: "main") {
             Group {
-                if let store { DesktopView(store: store) }
+                if let store, let sync { DesktopView(store: store, sync: sync) }
                 else {
                     ContentUnavailableView {
                         Label("Cannot open local data", systemImage: "exclamationmark.triangle")
@@ -22,8 +26,12 @@ struct DailyQuestionsApp: App {
                         Text(startupError ?? "The local store could not be opened.")
                     } actions: {
                         Button("Retry") {
-                            do { store = try Self.openStore(); startupError = nil }
-                            catch { startupError = error.localizedDescription }
+                            do {
+                                let store = try Self.openStore()
+                                self.store = store
+                                sync = SyncCoordinator(store: store)
+                                startupError = nil
+                            } catch { startupError = error.localizedDescription }
                         }
                     }
                     .foregroundStyle(.red)
@@ -39,8 +47,8 @@ struct DailyQuestionsApp: App {
         .windowResizability(.contentMinSize)
 
         MenuBarExtra {
-            if let store {
-                MenuPanel(store: store)
+            if let store, let sync {
+                MenuPanel(store: store, sync: sync)
                     .tint(Palette.ink)
             } else {
                 HStack(alignment: .top, spacing: 12) {
@@ -62,8 +70,8 @@ struct DailyQuestionsApp: App {
         #if VERIFICATION
         // The same panel can be exercised when system menu bar automation is unavailable.
         Window("Menu Panel Verification", id: "verification-panel") {
-            if let store {
-                MenuPanel(store: store)
+            if let store, let sync {
+                MenuPanel(store: store, sync: sync)
                     .tint(Palette.ink)
             }
         }
@@ -108,13 +116,4 @@ enum DockIcon {
     static func hide() {
         NSApp.setActivationPolicy(.accessory)
     }
-}
-
-enum Palette {
-    static let ink = Color("Ink")
-    static let background = Color("Background")
-    static let surface = Color("Surface")
-    static let border = Color("Border")
-    static let selection = Color("Selection")
-    static let onInk = Color("OnInk")
 }

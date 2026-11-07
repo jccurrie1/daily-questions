@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MenuPanel: View {
     let store: DailyStore
+    let sync: SyncCoordinator
     @State private var error: String?
 
     var body: some View {
@@ -32,12 +33,9 @@ struct MenuPanel: View {
                                 HStack(spacing: 12) {
                                     Text(question.text).frame(maxWidth: .infinity, alignment: .leading)
                                     HStack(spacing: 8) {
-                                        answerButton("y", value: true, question: question, saved: saved)
-                                        answerButton("n", value: false, question: question, saved: saved)
-                                        Image(systemName: "lock.fill")
-                                            .font(.caption).foregroundStyle(.secondary)
-                                            .opacity(saved == nil ? 0 : 1)
-                                            .accessibilityHidden(true)
+                                        AnswerButton(value: true, question: question, saved: saved) { answer(question, value: true) }
+                                        AnswerButton(value: false, question: question, saved: saved) { answer(question, value: false) }
+                                        SavedLock(saved: saved != nil)
                                     }
                                 }
                                 .padding(14)
@@ -64,27 +62,15 @@ struct MenuPanel: View {
             .frame(width: 460)
             .background(Palette.background)
         }
+        .onAppear { Task { await sync.syncNow() } }
     }
 
-    private func answerButton(_ label: String, value: Bool, question: DailyQuestion, saved: DailyAnswer?) -> some View {
-        Button {
-            do {
-                // Read the clock at the click, not when the panel last rendered.
-                try store.answer(question, value: value)
-                error = nil
-            } catch { self.error = error.localizedDescription }
-        } label: {
-            Text(label).font(.system(size: 16, weight: .medium))
-                .frame(width: 34, height: 34)
-                .foregroundStyle(saved?.value == value ? Palette.onInk : Palette.ink)
-                .background(saved?.value == value ? Palette.ink : Palette.selection, in: Circle())
-                .contentShape(Circle())
-        }
-        .buttonStyle(AnswerBubbleStyle())
-        .disabled(saved != nil)
-        .accessibilityLabel("\(value ? "Yes" : "No") — \(question.text)")
-        .accessibilityValue(saved.map { "Saved \($0.value ? "Yes" : "No"). Cannot be changed." } ?? "Not answered")
-        .help(saved == nil ? (value ? "Answer Yes" : "Answer No") : "Saved answers cannot be changed")
+    private func answer(_ question: DailyQuestion, value: Bool) {
+        do {
+            // Read the clock at the click, not when the panel last rendered.
+            try store.answer(question, value: value)
+            error = nil
+        } catch { self.error = error.localizedDescription }
     }
 }
 
@@ -105,11 +91,5 @@ struct OpenWindowButton: View {
         .buttonStyle(.plain)
         .help("Open Daily Questions")
         .accessibilityLabel("Open Daily Questions")
-    }
-}
-
-private struct AnswerBubbleStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label.opacity(configuration.isPressed ? 0.75 : 1)
     }
 }

@@ -8,12 +8,57 @@ final class DailyQuestion {
     fileprivate(set) var text: String
     private(set) var createdDay: String
     fileprivate(set) var archivedDay: String?
+    fileprivate(set) var modifiedAt: Date = Date.distantPast
 
-    fileprivate init(text: String, createdDay: String) {
+    fileprivate init(text: String, createdDay: String, now: Date) {
         id = UUID()
         self.text = text
         self.createdDay = createdDay
+        modifiedAt = now
     }
+
+    fileprivate init(record: QuestionRecord) {
+        id = record.id
+        text = record.text
+        createdDay = record.createdDay
+        archivedDay = record.archivedDay
+        modifiedAt = record.modifiedAt
+    }
+
+    var record: QuestionRecord {
+        QuestionRecord(id: id, text: text, createdDay: createdDay, archivedDay: archivedDay, modifiedAt: modifiedAt)
+    }
+}
+
+struct QuestionRecord: Codable, Equatable, Sendable {
+    var id: UUID
+    var text: String
+    var createdDay: String
+    var archivedDay: String?
+    var modifiedAt: Date
+}
+
+struct AnswerRecord: Codable, Equatable, Sendable {
+    var questionID: UUID
+    var day: String
+    var value: Bool
+}
+
+struct SyncSnapshot: Codable, Equatable, Sendable {
+    var version = 1
+    var deviceID: String
+    var deviceName: String
+    var exportedAt: Date
+    var questions: [QuestionRecord]
+    var answers: [AnswerRecord]
+}
+
+struct MergeSummary: Equatable, Sendable {
+    var addedQuestions = 0
+    var updatedQuestions = 0
+    var addedAnswers = 0
+
+    var isEmpty: Bool { addedQuestions == 0 && updatedQuestions == 0 && addedAnswers == 0 }
 }
 
 @Model
@@ -32,6 +77,10 @@ final class DailyAnswer {
 
     static func key(questionID: UUID, day: String) -> String {
         "\(questionID.uuidString)/\(day)"
+    }
+
+    var record: AnswerRecord {
+        AnswerRecord(questionID: questionID, day: day, value: value)
     }
 }
 
@@ -89,6 +138,7 @@ final class DailyStore {
     let container: ModelContainer
     private(set) var questions: [DailyQuestion] = []
     private(set) var answers: [DailyAnswer] = []
+    var onChange: (@MainActor () -> Void)?
     private let context: ModelContext
 
     init(inMemory: Bool = false, storageURL: URL? = nil, allowsSave: Bool = true) throws {
@@ -106,26 +156,31 @@ final class DailyStore {
     }
 
     func createQuestion(_ text: String, now: Date = Date()) throws -> DailyQuestion {
-        let question = DailyQuestion(text: try validText(text), createdDay: LocalDay.key(for: now))
+        let question = DailyQuestion(text: try validText(text), createdDay: LocalDay.key(for: now), now: now)
         context.insert(question)
         try save()
         questions.append(question)
         sortQuestions()
+        onChange?()
         return question
     }
 
-    func updateQuestion(_ question: DailyQuestion, text: String) throws {
+    func updateQuestion(_ question: DailyQuestion, text: String, now: Date = Date()) throws {
         try requireActive(question)
         let originalText = question.text
+        let originalModifiedAt = question.modifiedAt
         question.text = try validText(text)
-        try save { question.text = originalText }
+        question.modifiedAt = now
+        try save { question.text = originalText; question.modifiedAt = originalModifiedAt }
         sortQuestions()
+        onChange?()
     }
 
     func archiveQuestion(_ question: DailyQuestion, now: Date = Date()) throws {
         try requireActive(question)
         question.archivedDay = LocalDay.key(for: now)
         try save { question.archivedDay = nil }
+        onChange?()
     }
 
     func answer(_ question: DailyQuestion, value: Bool, now: Date = Date()) throws {
@@ -139,10 +194,79 @@ final class DailyStore {
         try save()
         answers.append(answer)
         answers.sort(using: SortDescriptor(\.day))
+        onChange?()
     }
 
     func savedAnswer(for question: DailyQuestion, day: String) -> DailyAnswer? {
         answers.first { $0.questionID == question.id && $0.day == day }
+    }
+
+    func snapshot(deviceID: String, deviceName: String, now: Date = Date()) -> SyncSnapshot {
+        SyncSnapshot(
+            deviceID: deviceID,
+            deviceName: deviceName,
+            exportedAt: now,
+            questions: questions.map(\.record),
+            answers: answers.map(\.record)
+        )
+    }
+
+    func merge(_ snapshot: SyncSnapshot) throws -> MergeSummary {
+        var summary = MergeSummary()
+        var insertedQuestions: [DailyQuestion] = []
+        var insertedAnswers: [DailyAnswer] = []
+        var restores: [() -> Void] = []
+
+        for record in snapshot.questions {
+            if let question = questions.first(where: { $0.id == record.id }) {
+                let originalText = question.text
+                let originalModifiedAt = question.modifiedAt
+                let originalArchivedDay = question.archivedDay
+                var changed = false
+                if record.modifiedAt > question.modifiedAt, record.text != question.text {
+                    question.text = record.text
+                    question.modifiedAt = record.modifiedAt
+                    changed = true
+                }
+                if let remoteArchivedDay = record.archivedDay,
+                   question.archivedDay.map({ remoteArchivedDay < $0 }) ?? true {
+                    question.archivedDay = remoteArchivedDay
+                    changed = true
+                }
+                if changed {
+                    summary.updatedQuestions += 1
+                    restores.append {
+                        question.text = originalText
+                        question.modifiedAt = originalModifiedAt
+                        question.archivedDay = originalArchivedDay
+                    }
+                }
+            } else {
+                let question = DailyQuestion(record: record)
+                context.insert(question)
+                insertedQuestions.append(question)
+                summary.addedQuestions += 1
+            }
+        }
+
+        let knownIDs = Set((questions + insertedQuestions).map(\.id))
+        let existingKeys = Set(answers.map(\.key))
+        for record in snapshot.answers where knownIDs.contains(record.questionID) {
+            let key = DailyAnswer.key(questionID: record.questionID, day: record.day)
+            guard !existingKeys.contains(key), !insertedAnswers.contains(where: { $0.key == key }) else { continue }
+            let answer = DailyAnswer(questionID: record.questionID, day: record.day, value: record.value)
+            context.insert(answer)
+            insertedAnswers.append(answer)
+            summary.addedAnswers += 1
+        }
+
+        guard !summary.isEmpty else { return summary }
+        try save { restores.forEach { $0() } }
+        questions.append(contentsOf: insertedQuestions)
+        sortQuestions()
+        answers.append(contentsOf: insertedAnswers)
+        answers.sort(using: SortDescriptor(\.day))
+        return summary
     }
 
     private func validText(_ text: String) throws -> String {
