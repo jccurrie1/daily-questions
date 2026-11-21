@@ -2,7 +2,6 @@ import SwiftUI
 
 struct MobileQuestionsView: View {
     let store: DailyStore
-    let sync: SyncCoordinator
     @State private var showArchived = false
     @State private var selectedID: UUID?
     @State private var creating = false
@@ -82,7 +81,7 @@ struct MobileQuestionsView: View {
             }
             .background(Palette.background)
             .navigationTitle("Questions")
-            .settingsToolbar(sync)
+            .settingsToolbar()
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { creating = true } label: {

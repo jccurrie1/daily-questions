@@ -1,6 +1,6 @@
 # Daily Questions
 
-Daily Questions is a native macOS app in Swift and SwiftUI, with local SQLite storage. An iPhone app in the same project shares the model and syncs through a folder in iCloud Drive.
+Daily Questions is a native macOS app in Swift and SwiftUI, with local SQLite storage. An iPhone app in the same project shares the model code and keeps its own separate SQLite store on the phone. The two apps do not sync.
 
 ## Demo
 
@@ -48,9 +48,9 @@ xcodebuild -project DailyQuestions.xcodeproj -scheme DailyQuestions \
 
 ## iPhone app
 
-The `DailyQuestionsiOS` target builds the same app for iPhone with an iOS 26.0 deployment target. It has three tabs: Today replaces the menu bar panel, Questions keeps the single list with an editor inside the selected row, and Analytics opens one question's four-week overview and week in detail. Settings, from the gear on Today, holds the sync folder and an optional weekday reminder that uses a local notification.
+The `DailyQuestionsiOS` target builds the same app for iPhone with an iOS 26.0 deployment target. It has three tabs: Today replaces the menu bar panel, Questions keeps the single list with an editor inside the selected row, and Analytics opens one question's four-week overview and week in detail. Settings, from the gear on Today, holds an optional weekday reminder that uses a local notification.
 
-The iPhone sources live in `DailyQuestionsiOS`. `Models.swift`, `Sync.swift`, `Palette.swift`, `AnswerControls.swift`, `SyncSettings.swift`, and `PerformanceView.swift` are shared with the Mac target.
+The iPhone sources live in `DailyQuestionsiOS`. `Models.swift`, `Palette.swift`, `AnswerControls.swift`, and `PerformanceView.swift` are shared with the Mac target. Sharing the source does not share data: each app opens its own store in its own sandbox, so questions and answers entered on one device stay on that device.
 
 To run it on your own iPhone without a paid developer membership:
 
@@ -67,12 +67,6 @@ xcodebuild -project DailyQuestions.xcodeproj -target DailyQuestionsiOS \
   CODE_SIGNING_ALLOWED=NO build
 ```
 
-## Sync
-
-Both apps can share one folder, normally in iCloud Drive. Each device writes its own JSON file there, named by a device ID, and reads the others' files on launch, when the app becomes active, after every save, and when Sync now is pressed. The local SQLite store stays the source of truth; the folder is only the courier. The folder is chosen through the system file picker, so neither app needs a paid iCloud or CloudKit entitlement.
-
-Merging never changes a saved answer: answers are a union keyed by question and day. A question's wording takes the newer edit, and archiving is one way, keeping the earlier archive day. Set it up on the Mac under Settings in the sidebar and on the iPhone under Settings from the Today gear, choosing the same folder on both.
-
 ## Verification
 
 Run the model and date checks on this Mac:
@@ -81,10 +75,9 @@ Run the model and date checks on this Mac:
 scripts/check-store.sh
 scripts/check-report.sh
 scripts/check-analytics.sh
-scripts/check-sync.sh
 ```
 
-The checks use temporary stores and do not modify app data. They cover persistence, immutable answers, archive history, failed-save rollback and retry, weekday rules, DST, midnight, time-zone changes, and the sync merge and folder exchange.
+The checks use temporary stores and do not modify app data. They cover persistence, immutable answers, archive history, failed-save rollback and retry, weekday rules, DST, midnight, and time-zone changes.
 
 For isolated UI testing, the `DailyQuestions-Verification` scheme passes `--verification` and uses a separate store. The standard scheme uses the real app store. A verification build with the `VERIFICATION` Swift condition also exposes the same menu panel in a normal window; this window is absent from normal builds.
 

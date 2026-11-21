@@ -1,8 +1,6 @@
 import SwiftUI
-import UniformTypeIdentifiers
 
 struct SettingsToolbar: ViewModifier {
-    let sync: SyncCoordinator
     @State private var showingSettings = false
 
     func body(content: Content) -> some View {
@@ -17,7 +15,7 @@ struct SettingsToolbar: ViewModifier {
             }
             .sheet(isPresented: $showingSettings) {
                 NavigationStack {
-                    SettingsView(sync: sync)
+                    SettingsView()
                         .navigationBarTitleDisplayMode(.inline)
                         .toolbar {
                             ToolbarItem(placement: .topBarTrailing) {
@@ -33,49 +31,19 @@ struct SettingsToolbar: ViewModifier {
 }
 
 extension View {
-    func settingsToolbar(_ sync: SyncCoordinator) -> some View {
-        modifier(SettingsToolbar(sync: sync))
+    func settingsToolbar() -> some View {
+        modifier(SettingsToolbar())
     }
 }
 
 struct SettingsView: View {
-    let sync: SyncCoordinator
     @AppStorage("reminderEnabled") private var reminderEnabled = false
     @AppStorage("reminderMinuteOfDay") private var reminderMinuteOfDay = 17 * 60
-    @State private var choosingFolder = false
     @State private var reminderError: String?
 
     var body: some View {
         ScrollView {
             VStack(spacing: 12) {
-                VStack(spacing: 0) {
-                    if sync.hasFolder {
-                        Button { choosingFolder = true } label: {
-                            row("Folder", value: sync.folderName ?? "", symbol: "chevron.right")
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityHint("Change the sync folder")
-                        Divider()
-                        Button { Task { await sync.syncNow() } } label: {
-                            row("Last sync", value: lastSyncText, symbol: "arrow.clockwise")
-                        }
-                        .buttonStyle(.plain)
-                        .disabled(sync.isSyncing)
-                        .accessibilityHint("Sync now")
-                        if !sync.otherDevices.isEmpty {
-                            Divider()
-                            row("Devices", value: sync.otherDevices.joined(separator: ", "))
-                        }
-                    } else {
-                        Button { choosingFolder = true } label: {
-                            row("Sync folder", value: "Choose", symbol: "chevron.right")
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-                .padding(.horizontal, 16)
-                .mobileCard()
-
                 VStack(spacing: 0) {
                     Toggle("Weekday reminder", isOn: $reminderEnabled)
                         .tint(Palette.toggle)
@@ -89,7 +57,7 @@ struct SettingsView: View {
                 .padding(.horizontal, 16)
                 .mobileCard()
 
-                if let message = sync.error ?? reminderError {
+                if let message = reminderError {
                     Text(message)
                         .font(.footnote)
                         .foregroundStyle(.red)
@@ -102,36 +70,8 @@ struct SettingsView: View {
             .padding(.bottom, 24)
         }
         .navigationTitle("Settings")
-        .fileImporter(isPresented: $choosingFolder, allowedContentTypes: [.folder]) { result in
-            if case .success(let url) = result { sync.setFolder(url) }
-        }
         .onChange(of: reminderEnabled) { updateReminder() }
         .onChange(of: reminderMinuteOfDay) { updateReminder() }
-    }
-
-    private var lastSyncText: String {
-        if sync.isSyncing { return "Syncing…" }
-        guard let lastSync = sync.lastSync else { return "Never" }
-        return lastSync.formatted(.relative(presentation: .named))
-    }
-
-    private func row(_ label: String, value: String, symbol: String? = nil) -> some View {
-        HStack(spacing: 10) {
-            Text(label)
-            Spacer(minLength: 12)
-            Text(value)
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
-                .truncationMode(.middle)
-            if let symbol {
-                Image(systemName: symbol)
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                    .accessibilityHidden(true)
-            }
-        }
-        .frame(minHeight: 52)
-        .contentShape(Rectangle())
     }
 
     private var reminderTime: Binding<Date> {
