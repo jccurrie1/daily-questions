@@ -2,24 +2,19 @@ import SwiftUI
 
 @main
 struct DailyQuestionsiOSApp: App {
-    @Environment(\.scenePhase) private var scenePhase
     @State private var store: DailyStore?
-    @State private var sync: SyncCoordinator?
     @State private var startupError: String?
 
     init() {
-        do {
-            let store = try DailyStore()
-            _store = State(initialValue: store)
-            _sync = State(initialValue: SyncCoordinator(store: store))
-        } catch { _startupError = State(initialValue: error.localizedDescription) }
+        do { _store = State(initialValue: try DailyStore()) }
+        catch { _startupError = State(initialValue: error.localizedDescription) }
     }
 
     var body: some Scene {
         WindowGroup {
             Group {
-                if let store, let sync {
-                    MobileRootView(store: store, sync: sync)
+                if let store {
+                    MobileRootView(store: store)
                 } else {
                     ContentUnavailableView {
                         Label("Cannot open local data", systemImage: "exclamationmark.triangle")
@@ -27,42 +22,34 @@ struct DailyQuestionsiOSApp: App {
                         Text(startupError ?? "The local store could not be opened.")
                     } actions: {
                         Button("Retry") {
-                            do {
-                                let store = try DailyStore()
-                                self.store = store
-                                sync = SyncCoordinator(store: store)
-                                startupError = nil
-                            } catch { startupError = error.localizedDescription }
+                            do { store = try DailyStore(); startupError = nil }
+                            catch { startupError = error.localizedDescription }
                         }
                     }
                     .foregroundStyle(.red)
                 }
             }
             .tint(Palette.ink)
-            .onChange(of: scenePhase) { _, phase in
-                if phase == .active, let sync { Task { await sync.syncNow() } }
-            }
         }
     }
 }
 
 struct MobileRootView: View {
     let store: DailyStore
-    let sync: SyncCoordinator
     @State private var section: MobileSection = .today
 
     var body: some View {
         TabView(selection: $section) {
             Tab(value: MobileSection.today) {
-                TodayView(store: store, sync: sync)
+                TodayView(store: store)
                     .toolbarVisibility(.hidden, for: .tabBar)
             }
             Tab(value: MobileSection.questions) {
-                MobileQuestionsView(store: store, sync: sync)
+                MobileQuestionsView(store: store)
                     .toolbarVisibility(.hidden, for: .tabBar)
             }
             Tab(value: MobileSection.analytics) {
-                MobileAnalyticsView(store: store, sync: sync)
+                MobileAnalyticsView(store: store)
                     .toolbarVisibility(.hidden, for: .tabBar)
             }
         }

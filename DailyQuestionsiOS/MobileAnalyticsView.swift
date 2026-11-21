@@ -2,7 +2,6 @@ import SwiftUI
 
 struct MobileAnalyticsView: View {
     let store: DailyStore
-    let sync: SyncCoordinator
 
     var body: some View {
         NavigationStack {
@@ -35,7 +34,7 @@ struct MobileAnalyticsView: View {
             }
             .background(Palette.background)
             .navigationTitle("Analytics")
-            .settingsToolbar(sync)
+            .settingsToolbar()
             .navigationDestination(for: UUID.self) { id in
                 if let question = store.questions.first(where: { $0.id == id }) {
                     MobileReportView(question: question, store: store)

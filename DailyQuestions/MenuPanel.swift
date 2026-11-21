@@ -2,7 +2,6 @@ import SwiftUI
 
 struct MenuPanel: View {
     let store: DailyStore
-    let sync: SyncCoordinator
     @State private var error: String?
 
     var body: some View {
@@ -62,7 +61,6 @@ struct MenuPanel: View {
             .frame(width: 460)
             .background(Palette.background)
         }
-        .onAppear { Task { await sync.syncNow() } }
     }
 
     private func answer(_ question: DailyQuestion, value: Bool) {

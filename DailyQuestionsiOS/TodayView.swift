@@ -2,7 +2,6 @@ import SwiftUI
 
 struct TodayView: View {
     let store: DailyStore
-    let sync: SyncCoordinator
     @State private var error: String?
 
     var body: some View {
@@ -37,7 +36,7 @@ struct TodayView: View {
                 .navigationSubtitle(now.formatted(MobileLayout.dateFormat.weekday(.abbreviated).month(.abbreviated).day().year()))
             }
             .background(Palette.background)
-            .settingsToolbar(sync)
+            .settingsToolbar()
         }
     }
 
